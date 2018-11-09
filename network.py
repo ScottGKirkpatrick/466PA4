@@ -141,7 +141,7 @@ class Router:
         #save neighbors and interfeces on which we connect to them
         self.cost_D = cost_D    # {neighbor: {interface: cost}}
         #TODO: set up the routing table for connected hosts
-        self.rt_tbl_D = {}      # {destination: {router: cost}}
+        self.rt_tbl_D = {self.name: {self.name:0}}      # {destination: {router: cost}}
         print('%s: Initialized routing table' % self)
         self.print_routes()
     
@@ -149,7 +149,32 @@ class Router:
     ## Print routing table
     def print_routes(self):
         #TODO: print the routes as a two dimensional table
-        print(self.rt_tbl_D)
+        print("╒══════",end = '')
+        for dest in list(self.rt_tbl_D):
+            print("╤══════",end = '')
+        print("╕\n| %s " % self.name.ljust(4),end = '')
+        for dest in list(self.rt_tbl_D):
+            print("| %s " % dest.rjust(4),end = '')
+        print("|\n╞══════", end = '')
+        for dest in list(self.rt_tbl_D):
+            print("╪══════",end = '')
+        print("╡")
+        i = 0
+        for rtr in list(self.rt_tbl_D[self.name]):
+            i += 1
+            print("| %s " % rtr.ljust(4),end = '')
+            for dest in list(self.rt_tbl_D):
+                print("| %s " % str(self.rt_tbl_D[dest][rtr]).rjust(4),end = '')
+            if i < len(list(self.rt_tbl_D)):
+                print("|\n├──────", end = '')
+                for dest in list(self.rt_tbl_D):
+                    print("┼──────",end = '')
+                print("┤")
+        print("|\n╘══════",end = '')
+        for dest in list(self.rt_tbl_D):
+            print("╧══════",end = '')
+        print("╛")
+
 
 
     ## called when printing the object
