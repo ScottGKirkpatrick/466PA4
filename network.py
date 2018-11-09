@@ -141,7 +141,7 @@ class Router:
         #save neighbors and interfeces on which we connect to them
         self.cost_D = cost_D    # {neighbor: {interface: cost}}
         #TODO: set up the routing table for connected hosts
-        self.rt_tbl_D = {self.name: {self.name:0}}      # {destination: {router: cost}}
+        self.rt_tbl_D = {self.name: {self.name:0,'RB':1},'RB':{'RA':1,'RB':0},'H1':{'RA':1,'RB':2}}      # {destination: {router: cost}}
         print('%s: Initialized routing table' % self)
         self.print_routes()
     
@@ -165,7 +165,7 @@ class Router:
             print("| %s " % rtr.ljust(4),end = '')
             for dest in list(self.rt_tbl_D):
                 print("| %s " % str(self.rt_tbl_D[dest][rtr]).rjust(4),end = '')
-            if i < len(list(self.rt_tbl_D)):
+            if i < len(list(self.rt_tbl_D[self.name])):
                 print("|\n├──────", end = '')
                 for dest in list(self.rt_tbl_D):
                     print("┼──────",end = '')
