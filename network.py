@@ -157,7 +157,7 @@ class Router:
         
     ## Print routing table
     def print_routes(self):
-        #TODO: print the routes as a two dimensional table
+        #Print first row with own name and destinations
         print("╒══════",end = '')
         for dest in list(self.rt_tbl_D):
             print("╤══════",end = '')
@@ -168,17 +168,20 @@ class Router:
         for dest in list(self.rt_tbl_D):
             print("╪══════",end = '')
         print("╡")
+        #Print row for each Router listing cost for each destination via that router
         i = 0
         for rtr in list(self.rt_tbl_D[self.name]):
             i += 1
             print("| %s " % rtr.ljust(4),end = '')
             for dest in list(self.rt_tbl_D):
                 print("| %s " % str(self.rt_tbl_D[dest][rtr]).rjust(4),end = '')
+            # Print row seperator unless this is the last row
             if i < len(list(self.rt_tbl_D[self.name])):
                 print("|\n├──────", end = '')
                 for dest in list(self.rt_tbl_D):
                     print("┼──────",end = '')
                 print("┤")
+        # Print Bottom line of table
         print("|\n╘══════",end = '')
         for dest in list(self.rt_tbl_D):
             print("╧══════",end = '')
