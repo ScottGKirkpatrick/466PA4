@@ -1,5 +1,6 @@
 import queue
 import threading
+from sys import maxsize 
 
 
 ## wrapper class for a queue of packets
@@ -138,10 +139,18 @@ class Router:
         self.name = name
         #create a list of interfaces
         self.intf_L = [Interface(max_queue_size) for _ in range(len(cost_D))]
-        #save neighbors and interfeces on which we connect to them
+        #save neighbors and interfaces on which we connect to them
         self.cost_D = cost_D    # {neighbor: {interface: cost}}
         #TODO: set up the routing table for connected hosts
-        self.rt_tbl_D = {self.name: {self.name:0,'RB':1},'RB':{'RA':1,'RB':0},'H1':{'RA':1,'RB':2}}      # {destination: {router: cost}}
+        self.rt_tbl_D = {self.name:{self.name:0}}      # {destination: {router: cost}}
+        for nbr in list(self.cost_D):
+            #Determine link with lowest cost
+            lolink = maxsize
+            for link in list(self.cost_D[nbr]):
+                if cost_D[nbr][link] < lolink:
+                    lolink = cost_D[nbr][link]
+            #Add lowest link cost to Routing table
+            self.rt_tbl_D[nbr] = {self.name:lolink}
         print('%s: Initialized routing table' % self)
         self.print_routes()
     
