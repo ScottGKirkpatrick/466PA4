@@ -162,7 +162,7 @@ class Router:
         for dest in list(self.rt_tbl_D):
             print("╤══════",end = '')
         print("╕\n| %s " % self.name.ljust(4),end = '')
-        for dest in sorted(self.rt_tbl_D):
+        for dest in list(self.rt_tbl_D):
             print("| %s " % dest.rjust(4),end = '')
         print("|\n╞══════", end = '')
         for dest in list(self.rt_tbl_D):
@@ -173,7 +173,7 @@ class Router:
         for rtr in list(self.rt_tbl_D[self.name]):
             i += 1
             print("| %s " % rtr.ljust(4),end = '')
-            for dest in sorted(self.rt_tbl_D):
+            for dest in list(self.rt_tbl_D):
                 print("| %s " % str(self.rt_tbl_D[dest][rtr]).rjust(4),end = '')
             # Print row seperator unless this is the last row
             if i < len(list(self.rt_tbl_D[self.name])):
@@ -235,7 +235,6 @@ class Router:
         #create a routing table update packet
         routes = ""
         for dest in list(self.rt_tbl_D):
-            routes += "%s:%s,%d|" % (dest,self.name,self.rt_tbl_D[dest][self.name])
         p = NetworkPacket(0, 'control', routes)
         try:
             print('%s: sending routing update "%s" from interface %d' % (self, p, i))
@@ -250,36 +249,14 @@ class Router:
     def update_routes(self, p, i):
         #TODO: add logic to update the routing tables and
         # possibly send out routing updates
-        if p.prot_S != 'control':
+        if p.prot_S != 'control' :
             return
-        print('%s: Received routing update %s from interface %d' % (self, p, i))
-        sendUpdates = False
-        for destrts in p.data_S.split("|"):
-            if destrts == "":
+        for dest in p.data_S.split(':'):
+            if dest == '':
                 continue
-            dest = destrts.split(':')[0]
-            for rtrcst in destrts.split(':')[1].split(";"):
-                if rtrcst == "":
-                    continue   
-                rtr = rtrcst.split(",")[0]
-                cost = int(rtrcst.split(",")[1])
-                if dest in self.rt_tbl_D:
-                    self.rt_tbl_D[dest][rtr] = cost 
-                else:
-                    self.rt_tbl_D[dest] = {rtr:cost}
-                if self.name not in self.rt_tbl_D[dest] or self.rt_tbl_D[dest][rtr] + self.rt_tbl_D[rtr][self.name] < self.rt_tbl_D[dest][self.name]:
-                    self.rt_tbl_D[dest][self.name] = self.rt_tbl_D[dest][rtr] + self.rt_tbl_D[rtr][self.name]
-                    sendUpdates = True
-        if sendUpdates:
-            for nbr in list(self.cost_D):
-                if nbr[0] == 'R':
-                    #Determine link with lowest cost
-                    lolink = maxsize
-                    for link in list(self.cost_D[nbr]):
-                        if self.cost_D[nbr][link] < lolink:
-                            lolink = self.cost_D[nbr][link]
-                            cheapLink = link
-                    self.send_routes(cheapLink)        
+            for rtr in dest.split()
+
+        print('%s: Received routing update %s from interface %d' % (self, p, i))
 
                 
     ## thread target for the host to keep forwarding data
